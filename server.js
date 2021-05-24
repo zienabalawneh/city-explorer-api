@@ -51,9 +51,9 @@ server.get('/getLocation', (req, res) => {
 });
 
 
-server.get('*', (req, res) => {
-    res.status(404).send('not found');
-})
+// server.get('*', (req, res) => {
+//     res.status(404).send('not found');
+// })
 
 
 class Forecast {
