@@ -32,10 +32,11 @@ server.get('/getLocation', (req, res) => {
     console.log(req.query);
     let  forecast1;
     let locNameData= req.query.city_name;
-    let lat=req.query.lat;
+   
     let lon=req.query.lon;
+    let lat=req.query.lat;
     let locationItem = weatherData.find(item => {
-        if (item.city_name == locNameData &&item.lat==lat && item.lon==lon){
+        if (item.city_name == locNameData&&  Math.round(item.lon)==lon&&Math.round(item.lat)==lat ){
          forecast1 = new Forecast(item);
             return item
 
@@ -44,7 +45,7 @@ server.get('/getLocation', (req, res) => {
          
     });
 
-
+    console.log(lat,lon);
     res.send(forecast1)
     // res.send(locationItem.description);
 
@@ -62,7 +63,7 @@ constructor (arr){
     this.Data=arr.data.map(item=>{
     let low = 'low of '+item.low_temp;
     let high='high of '+item.max_temp;
-    return { "descrbtion":low + high+' with  '+item.weather.description,"data":item.datetime};});
+    return { "description":low + high+' with  '+item.weather.description,"data":item.datetime};});
 
 }
 
