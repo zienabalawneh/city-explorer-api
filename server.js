@@ -1,72 +1,43 @@
 'use strict';
 
+
 require('dotenv').config();
-const exp =require('express');
-const weatherData = require('./data/weather.json');
+const express = require('express');
+// const weatherData = require('./data/weather.json');
+
 const cors = require('cors');
+const axios = require('axios');
 
-const server  = exp();
-server.use(cors()); //  make my server opened for anyone
-
-
-
-
-// const PORT = 3003;
-const PORT=process.env.PORT;
-
+const server = express();
+server.use(cors());
+const PORT = process.env.PORT;
 server.listen(PORT, () => {
-    console.log(`Listening on PORT ${PORT}`);
+    console.log(`Listening to PORT ${PORT}`);
 })
 
 
-// // http://localhost:3003/
-// server.get('/', (req, res) => {
-//     res.send('home route')
-// })
+
+//http://localhost:3005/movie?city=Amman
+// https://api.themoviedb.org/3/search/movie?api_key=3db36bcfc99f611aef75cef6c6346ca9&query=seattle;
+const movieHandler = require('./Modules/Movies.js');
+server.get('/movie', movieHandler);
 
 
-// http://localhost:3004/getLocation?city_name=Amman&lon=35.91&lat=31.95
-// http://localhost:3004/getLocation?city_name=Seattle&lon=-122.33207&lat=47.60621
-
-server.get('/getLocation', (req, res) => {
-    console.log(req.query);
-    let  forecast1;
-    let locNameData= req.query.city_name;
-   
-    let lon=req.query.lon;
-    let lat=req.query.lat;
-    let locationItem = weatherData.find(item => {
-        if (item.city_name == locNameData&&  Math.round(item.lon)==lon&&Math.round(item.lat)==lat ){
-         forecast1 = new Forecast(item);
-            return item
+//http://localhost:3005/weather?city=Amman
+//https://api.weatherbit.io/v2.0/forecast/daily?city=london&key=a08e3d69de0647cf8551c3a0297ed178
+const weatherHandler = require('./Modules/weather.js');
+server.get('/weather', weatherHandler);
 
 
-        }
-         
-    });
-
-    console.log(lat,lon);
-    res.send(forecast1)
-    // res.send(locationItem.description);
-
+server.get('*', (req, res) => {
+    res.send('not found');
 });
 
 
-// server.get('*', (req, res) => {
-//     res.status(404).send('not found');
-// })
 
 
-class Forecast {
 
-constructor (arr){
-    this.Data=arr.data.map(item=>{
-    let low = 'low of '+item.low_temp;
-    let high='high of '+item.max_temp;
-    return { "description":low + high+' with  '+item.weather.description,"data":item.datetime};});
 
-}
 
-}
 
 
